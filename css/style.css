@@ -1,0 +1,56 @@
+.box{position: relative;float:left;width: 49vw;height: 200px;}
+.overlay{width: 0;position: absolute;overflow:hidden;height: 100%;
+	right: 0;top: 0;background:#008CBA;transition: 0.5s ease;}
+.box:hover .overlay{width: 100%;transition: 0.5s ease;height: 100%;}
+.text{position: absolute;left:50%;top:50%;color: #fff;font-size: 20px;white-space: nowrap;
+	transform:translate(-50%,-50%);overflow: hidden;}
+
+body{overflow: hidden;position: relative;background: #bebebe;margin: 0;}
+
+.box1{position: relative;float:left;width: 49vw;height: 200px;}
+.overlay1{width: 0;position: absolute;overflow:hidden;height: 100%;
+	left: 0;top: 0;background:#008CBA;transition: 0.5s ease;}
+.box1:hover .overlay1{width: 100%;transition: 0.5s ease;height: 100%;}
+
+/*.containing{background: #bebebe;border: 2px solid;}*/
+.clr{clear: both;}
+.top-header{height: 42px;background: rgba(20,55,1100,0.6);padding:10px;}
+.top-header:after{content: '';clear: both;}
+.anim{width: 50px;cursor: pointer;transition: 0.5s ease;display: inline-block;}
+.bar-1,.bar-2,.bar-3{height: 10px;margin: 4px 0px;background: #000;transition: 0.5s ease;}
+
+.anim.click .bar-1{transform: rotate(-45deg) translate(-9px, 7px);transition: 0.5s ease;}
+.anim.click .bar-2{opacity: 0;transition: 0.5s ease;}
+.anim.click .bar-3{transform: rotate(45deg) translate(-12px, -12px);transition: 0.5s ease;}
+.anim.click{width:50px;transition: 0.5s ease;}
+
+.logo{font-weight:bold;display: inline-block;line-height: 42px;float:right;font-size: 49px;}
+
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  text-align: left;display: inline-block;
+}
+.rating > span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+}
+.rating > span:hover:before,
+.rating > span:hover ~ span:before {
+   content: "\2605";
+   position: absolute;
+}
+.sidebar ul li > a{text-decoration: none;padding: 10px;color: #fff;background: #000;font-weight: bold;}
+.progress_parent{margin-top:50px;width: 100%;height:30px;margin-top:25px;border:1px dashed;transition: 0.6s!important;position: relative;border-radius: 50px;overflow: hidden;}
+.cent{left: 50%;top: 50%;transform: translate(-50%,-50%);position: absolute;z-index: 99;font-weight: bold;}
+.progress{width:0%;background: green;display: inline-block;height: 30px;transition: 0.6s!important;}
+.sidebar{width: 0%;transition: 0.5s;overflow: hidden;border-right: 25px dashed;height: 0vh;position: fixed;}
+.sidebar > ul{display: inline-block;white-space: nowrap; display: none;margin-left: 5px;list-style: none;padding:none;}
+.sidebar.active{background: #bebebe;width: 25%;display: inline-block;height: 100vh;float: left;}
+.sidebar.active > ul > li{margin-bottom: 15px;padding:5px;font-size: 30px;cursor:pointer;}
+.sidebar.active > ul{display: block;transition: 0.5s;padding:0;}
+.sidebar.active + div{width: 70%;display: inline-block;transition: 0.5s;}
+.sidebar.active + div:after{content:'';display: block;clear: both;transition: 0.5s;}
+.sidebar + div{position:absolute;right:0px;width: 100%;transition:0.5s;height: 100vh;}
+.sidebar.active+div{margin-top:100vh;margin-left:25px dashed;}

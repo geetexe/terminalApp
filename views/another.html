@@ -1,0 +1,15 @@
+
+<div ng-controller="newController">
+<div><h2>Rate it down!</h2></div>
+<div class="progress_parent">
+	<span class="cent"></span>
+	<span class="progress"></span>
+
+</div>
+<div class="rating">
+<span ng-repeat="i in [5,4,3,2,1]" class="{{i}}" ng-click="rate($event)" ng-mouseover="statUpdate($event)">&#9734;</span>
+
+</div>
+<span id="stat"> {{rating1}} </span>
+<div id="rating">You've not yet rated.</div>
+</div>
