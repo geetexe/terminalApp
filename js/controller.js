@@ -1,21 +1,60 @@
 app.directive('myEnter', function () {
     return function (scope, element, attrs) {
-        element.bind("keydown keypress", function (event) {
+        element.bind("keydown", function (event) {
             if(event.which === 13) {
             	$(".window").animate({ scrollTop: $("#scr").height() }, 1000);
-                scope.$apply(function (){
+                scope.$apply(function(){
+                	scope.UP = 0;
+                	if(!scope.userInput==''){scope.historyLength++;}
+
+                	if(scope.historyLength)
+                		scope.targetInd = scope.historyLength - 1;
+                	else
+                		scope.targetInd = 0;
+
                     scope.$eval(attrs.myEnter);
                 });
+                
                 event.preventDefault();
+                event.stopImmediatePropagation();
             }
-            if(event.which === 38) {
-            	console.log("up key pressed!");
-            	$(".window").animate({ scrollTop: $("#scr").height() }, 1000);
-                scope.$apply(function (){
-                    console.log(scope);
-                    scope.$eval(attrs.myEnter);
-                });
-                event.preventDefault();
+            if(event.which === 38 || event.which === 40) {
+	            	var ev = event.which===38?'UP':'DOWN';
+	            	console.log("Event: "+ev);
+	            	$(".window").animate({ scrollTop: $("#scr").height() }, 1000);
+	                scope.$apply(function (){
+	                	var arr = [];
+	                	arr = scope.history;
+	                    //console.log(scope.history);
+	                    if(ev=='UP')
+	                    {
+
+	                    	if(scope.targetInd>-1)
+	                    		scope.userInput = scope.history[scope.targetInd];
+	                    	else
+	                    		scope.userInput = scope.history[0];
+	                    	scope.targetInd -= 1;
+
+	                    	if(scope.targetInd < 0)
+	                    		scope.targetInd = 0;
+		                    
+		                    scope.UP = 1;	                    	
+	                    }
+	                    else
+	                    {
+	                    	if(scope.UP)
+	                    	{
+		                    	scope.targetInd  += 1;
+		                    	if(scope.targetInd >= scope.historyLength)
+		                    		scope.targetInd = scope.historyLength-1;
+		                    	scope.userInput = scope.history[scope.targetInd];	                    		
+	                    	}
+
+	                    }
+	                    
+	                });
+	                event.preventDefault();
+	                event.stopImmediatePropagation();          		
             }
         });
     };
@@ -30,15 +69,22 @@ app.controller("theader", function($scope, $rootScope){
 	}
 });
 
-app.controller("joke", function($scope,$http){
+app.controller("terminalController", function($scope,$http){
+	$scope.UP = 0;
+	$scope.fetchHistory = 0;
 	$scope.busy = 0;
 	$scope.toggling = 0;
 	$scope.history = [];
-	$scope.tellMeaJoke = function()
+	$scope.historyLength = $scope.history.length;
+	$scope.processInput = function()
 	{
+
+		if($scope.userInput == undefined){
+			//to be handled.
+		}
+
 		if($scope.userInput!='')
 			$scope.history.push($scope.userInput);
-		console.log($scope.history);
 
 		var appendthis = '<span class="console-user">geet</span><span>@</span><span class="red">w4rm4chn13:</span>'+' '+$scope.userInput+'<br>';
 		$("#appendhere").append(appendthis);
@@ -47,7 +93,7 @@ app.controller("joke", function($scope,$http){
 			$scope.userInput='';
 			$scope.busy = 1;
 			$http.get("https://api.chucknorris.io/jokes/random")
-			.then(function(response){console.log(response.data.value)
+			.then(function(response){
 				$scope.str = response.data.value;
 				$scope.appendjoke = '<span class="white">CNJG says:</span><br>'+' '+$scope.str+'<br>';
 				$("#appendhere").append($scope.appendjoke);
@@ -63,29 +109,28 @@ app.controller("joke", function($scope,$http){
 		if($scope.userInput.indexOf("weather")>-1){
 			var cin = ("sudo weather ").length;
 			var city = $scope.userInput.slice(cin,$scope.userInput.length);
-			console.log(city);
+			
 			$scope.userInput = '';
 			$scope.busy = 1;
 			$http.get("http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=f4ef0931edd7df0498dd3b62d27c0ff6&units=metric")
 			.then(function(response){
-				console.log(response)
+				
 				$scope.str = response.data.main.temp;
-				$scope.s1 = $scope.str; //.replace("Chuck Norris", "Lokendra") || $scope.str.replace("chuck norris", "Lokendra") || $scope.str.replace("Chuck Norris'", "Lokendra's");
-				console.log($scope.str);
+				$scope.des = response.data.weather[0].description;
+				$scope.s1 = $scope.str;
+				
 				var n = "Temperature in "+response.data.name+": "
-				var appendjoke = '<span class="white">'+n+'</span><br>'+' '+$scope.s1+'&deg;C'+'<br>';
+				var appendjoke = '<span class="white">'+n+'</span><br>'+' '+$scope.s1+'&deg;C <br>'+$scope.des+'<br>';
 				$("#appendhere").append(appendjoke);
-			
 			}, function(error){
 				var err = error.status===-1 ? "CORS issue." : "Error.";
 				console.log("response: "+ error)
 				$scope.str = err;
-				$scope.s1 = $scope.str; //.replace("Chuck Norris", "Lokendra") || $scope.str.replace("chuck norris", "Lokendra") || $scope.str.replace("Chuck Norris'", "Lokendra's");
-				console.log($scope.str);
+				$scope.s1 = $scope.str;
+				//console.log($scope.str);
 				var appendjoke = '<span class="white">Error!:</span><br>'+' '+$scope.s1+'<br>';
 				$("#appendhere").append(appendjoke);
-			}
-			);
+			});
 		}
 
 
@@ -94,8 +139,7 @@ app.controller("joke", function($scope,$http){
 			var startIndex = ("sudo flip ").length;
 			var endIndex = $scope.userInput.length;
 			var degrees = $scope.userInput.slice(startIndex,endIndex);
-			console.log("to rotate by: "+Number(degrees)+" degrees");
-			console.log(typeof Number(degrees));
+			
 			var deg = Number(degrees);
 			var c = "rotateY(" +deg+ "deg)";
 			$("#scr").css("transform",c);
@@ -107,17 +151,17 @@ app.controller("joke", function($scope,$http){
 		if($scope.userInput == "whoami"){
 			$scope.busy = 1;
 			
-			var appendjoke = '<span class="white">You\'re '+'geet</span><br>';
+			var appendjoke = '<span class="white">You\'re '+'Geet.</span><br>';
 			$("#appendhere").append(appendjoke);
 
 		}
 
-		if($scope.userInput == "sudo vikas"){
+		if($scope.userInput == "sudo blackout"){
 			$scope.toggling++;
 			var st = $scope.toggling%2==0? ' removed.':' applied.';
 			$(".contain").toggleClass("vmc");
 			
-			var appendjoke = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">Vikas effect'+' '+st+'</span><br>';
+			var appendjoke = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">Blackout'+' '+st+'</span><br>';
 				$("#appendhere").append(appendjoke);
 			$scope.busy = 1;
 		}
@@ -139,16 +183,13 @@ app.controller("joke", function($scope,$http){
 		}
 
 		if($scope.userInput == "help"){
-			var sudohelp = "<span>sudo joke</span><br/><span>sudo vikas</span><br/><span>sudo weather [city]</span><span><br/><span>sudo show menu</span><br/><span>sudo hide menu</span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
+			var sudohelp = "<span>sudo joke</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo show menu</span><br/><span>sudo hide menu</span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
 			var appendjoke = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">You can issue the following commands to the terminal:</span><br>'+sudohelp;
 				$("#appendhere").append(appendjoke);
 			$scope.busy = 1;
 		}
 
-		if($scope.userInput == "")
-		{
-			console.log("got ya.");
-		}
+		
 		
 		else{
 			if(!$scope.busy)

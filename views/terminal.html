@@ -39,7 +39,7 @@
 	}
 </style>
 
-<div id="scr" class="contain" my-enter="tellMeaJoke()" ng-click="getFocus($event)">
+<div id="scr" class="contain" my-enter="processInput()" ng-click="getFocus($event)">
 	<div class="titlebar">
 	<div class="buttons">
 		<span class="close">x</span>
@@ -67,14 +67,14 @@ ___________      .__                 .___.__
 	<p class="mv-0">
 		Hey there!<br>Welcome to my terminal app! Type 'help' to get a list of all the supported commands.<br><br>
 		</p>
-		<div ng-controller="joke">
+		<div ng-controller="terminalController">
 		<div id="appendhere"></div>
 		<div id="output"></div>
 			<div class="currline" style="position: relative;">
 				<span class="console-user">geet</span><span>@</span><span class="red">w4rm4chn13:</span>
-				<!-- <input type="text" id="focushere" ng-model="userInput" my-enter="tellMeaJoke()" autofocus="true" style="opacity: 0;width: 0%;" /> -->
+				<!-- <input type="text" id="focushere" ng-model="userInput" my-enter="processInput()" autofocus="true" style="opacity: 0;width: 0%;" /> -->
 				<div class="iparea" style="display: inline-block;">
-					<input type="text" id="focushere" ng-model="userInput" my-enter="tellMeaJoke()" autofocus="true" style="opacity: 0;position: absolute;width: 100%;left: 0;" />
+					<input type="text" id="focushere" ng-model="userInput" my-enter="processInput()" autofocus="true" style="opacity: 0;position: absolute;width: 100%;left: 0;" />
 				
 					<div style="display: inline-block;"><!-- 
 						<span>geet trivedi</span> -->
