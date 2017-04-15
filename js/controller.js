@@ -175,13 +175,12 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 			$scope.toggling++;
 			var st = $scope.toggling%2==0? ' removed.':' applied.';
 			$(".contain").toggleClass("vmc");
-			
 			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">Blackout'+' '+st+'</span><br>';
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
 		}
 		if($scope.userInput == "help"){
-			var sudohelp = "<span>sudo joke</span><br/><span>sudo change bg</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
+			var sudohelp = "<span>sudo joke</span><br/><span>sudo change bg</span><br/><span>sudo quote</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
 			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">You can issue the following commands to the terminal:</span><br>'+sudohelp;
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
@@ -197,7 +196,6 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 		$scope.busy = 0;
 		$scope.userInput= '';
 	}
-	
 });
 
 app.controller("sidemenucontroller", function($scope){
@@ -220,11 +218,9 @@ app.controller("newController", function($scope){
 			x=0;
 		$("#stat").text( '' );
 	});
-
 	$scope.statUpdate = function($event){
 		$scope.rating1 = $event.path[0].className;
 	}
-
 	$scope.rate = function($event){
 		var target = angular.element($event.currentTarget);
 		rating = target.attr('class');
@@ -236,7 +232,6 @@ app.controller("newController", function($scope){
 		$(".progress").width(w);
 		$(".cent").text(w);
 	}
-	
 });
 
 app.controller("myController", function($scope){
