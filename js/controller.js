@@ -85,40 +85,26 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 	$scope.historyLength = $scope.history.length;
 	$scope.processInput = function()
 	{
-
-
-
 		if($scope.userInput == 'sudo joke'){
 			$scope.busy=1;
 			jokeApi.getData();
 		}
-
 		if($scope.userInput!='')
 			$scope.history.push($scope.userInput);
-
-		if($scope.userInput === undefined){
+		if($scope.userInput === undefined)
 			$scope.userInput = '';
-
-		}
-		
 		var appendthis = '<span class="console-user">geet</span><span>@</span><span class="red">w4rm4chn13:</span>'+' '+$scope.userInput+'<br>';
 		$("#appendhere").append(appendthis);
-
-
-
 		if($scope.userInput.indexOf("weather")>-1){
 			var cin = ("sudo weather ").length;
 			var city = $scope.userInput.slice(cin,$scope.userInput.length);
-			
 			$scope.userInput = '';
 			$scope.busy = 1;
 			$http.get("http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=f4ef0931edd7df0498dd3b62d27c0ff6&units=metric")
 			.then(function(response){
-				
 				$scope.str = response.data.main.temp;
 				$scope.des = response.data.weather[0].description;
 				$scope.s1 = $scope.str;
-				
 				var n = "Temperature in "+response.data.name+": "
 				var appendjoke = '<span class="white">'+n+'</span><br>'+' '+$scope.s1+'&deg;C <br>'+$scope.des+'<br>';
 				$("#appendhere").append(appendjoke);
@@ -132,30 +118,22 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 				$("#appendhere").append(appendWeather);
 			});
 		}
-
-
 		if($scope.userInput.indexOf("flip")>-1){
 			$scope.busy = 1;
 			var startIndex = ("sudo flip ").length;
 			var endIndex = $scope.userInput.length;
 			var degrees = $scope.userInput.slice(startIndex,endIndex);
-			
 			var deg = Number(degrees);
 			var c = "rotateY(" +deg+ "deg)";
 			$("#scr").css("transform",c);
 			var appendThis = '<span class="white">Rotated by </span><br>'+' '+deg+'<br>';
 			$("#appendhere").append(appendThis);
-
 		}
-
 		if($scope.userInput == "whoami"){
 			$scope.busy = 1;
-			
 			var appendId = '<span class="white">You\'re '+'Geet.</span><br>';
 			$("#appendhere").append(appendId);
-
 		}
-
 		if($scope.userInput == "sudo geet"){
 			$scope.busy = 1;
             var part1 = "G E e T";                                  
@@ -178,12 +156,7 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 				setTimeout(function(){ $(".sudoGeet").empty(); }, 300);
 				i++;
 			}, 500);
-			
-			/*var appendId = '<span class="white">You\'re '+'Geet.</span><br>';
-			$("#appendhere").append(appendId);*/
-
 		}
-
 		if($scope.userInput == "sudo blackout"){
 			$scope.toggling++;
 			var st = $scope.toggling%2==0? ' removed.':' applied.';
@@ -193,7 +166,7 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
 		}
-		if($scope.userInput == "sudo hide menu"){
+		/*if($scope.userInput == "sudo hide menu"){
 			
 			$(".top-header").hide();
 			
@@ -208,17 +181,13 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">Top header is now visible.</span><br>';
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
-		}
-
+		}*/
 		if($scope.userInput == "help"){
 			var sudohelp = "<span>sudo joke</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo show menu</span><br/><span>sudo hide menu</span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
 			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">You can issue the following commands to the terminal:</span><br>'+sudohelp;
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
 		}
-
-		
-		
 		else{
 			if(!$scope.busy)
 			{
@@ -227,7 +196,6 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 					$("#appendhere").append(appenderror);
 			}
 		}
-
 		$scope.busy = 0;
 		$scope.userInput= '';
 	}
