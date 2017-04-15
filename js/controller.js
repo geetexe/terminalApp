@@ -63,33 +63,19 @@ app.controller("theader", function($scope, $rootScope){
 	}
 });
 
-app.factory("jokeApi", function($http, $rootScope){
-  console.log("inside factory!!")
-  var apiurl = "https://api.chucknorris.io/jokes/random", myData;
-
+app.factory("jokeApi", function($http){
+  var apiurl = "https://api.chucknorris.io/jokes/random";
   return {
-    
     getData: function(){
-      
       $http.get(apiurl)
-      .success(function(data, status, config, headers){
-        myData = data;
-        console.log(myData.value)
-      })
       .then(function(response){
-      	$rootScope.abc = response.data.value;
-
-		$("#appendhere").append(""+$rootScope.abc+"<br>");
-
-
-      });
-      return $rootScope.abc;
-      
-    
-    },
-    
-    data: function() { console.log("hey!");return myData.value; }
-  
+		$("#appendhere").append(""+response.data.value+"<br>");
+      }, function(error){
+				console.log(error);
+				var appendError = '<span class="white">Error!</span><br>';
+				$("#appendhere").append(appendError);
+			});    
+    }  
   };
 });
 
@@ -106,14 +92,9 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 			//to be handled.
 		}
 
-		if($scope.userInput == 'factory'){
-			//to be handled.
+		if($scope.userInput == 'sudo joke'){
 			$scope.busy=1;
-
-			var p = jokeApi.getData();
-			console.log("are we getting this here ", $rootScope.abc);
-			//var appendthis = '<span class="console-user">geet</span><span>@</span><span class="red">w4rm4chn13:</span>'+' '+$scope.userInput+'<br>';
-			$("#appendhere").append( $rootScope.abc);
+			jokeApi.getData();
 		}
 
 		if($scope.userInput!='')
@@ -121,30 +102,6 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 
 		var appendthis = '<span class="console-user">geet</span><span>@</span><span class="red">w4rm4chn13:</span>'+' '+$scope.userInput+'<br>';
 		$("#appendhere").append(appendthis);
-
-		if($scope.userInput == "sudo joke"){
-			$scope.userInput='';
-			$scope.busy = 1;
-			$http.get("https://api.chucknorris.io/jokes/random")
-			.then(function(response){
-				$scope.str = response.data.value;
-				var appendJoke = '<span class="white">CNJG says:</span><br>'+' '+$scope.str+'<br>';
-				$("#appendhere").append(appendJoke);
-			
-			}, function(error){
-				console.log("response: "+ error);
-				var appendError = '<span class="white">Error!:</span><br>'+'<br>';
-				$("#appendhere").append(appendError);
-			});
-			
-			/*var m = jokeApi.getData();
-
-			$scope.str = m;*/
-
-			/*$scope.appendjoke = '<span class="white">CNJG says:</span><br>'+' '+$scope.str+'<br>';
-			$("#appendhere").append($scope.appendjoke);*/
-			
-		}
 
 		if($scope.userInput.indexOf("weather")>-1){
 			var cin = ("sudo weather ").length;
