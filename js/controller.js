@@ -14,7 +14,6 @@ app.directive('myEnter', function () {
 
                     scope.$eval(attrs.myEnter);
                 });
-                
                 event.preventDefault();
                 event.stopImmediatePropagation();
             }
@@ -56,7 +55,6 @@ app.directive('myEnter', function () {
 
 
 app.controller("theader", function($scope, $rootScope){
-
 	$scope.initHead = function(){
 		$(".sidebar").toggleClass("active");
 		$(".anim").toggleClass("click");
@@ -69,7 +67,7 @@ app.factory("jokeApi", function($http){
     getData: function(){
       $http.get(apiurl)
       .then(function(response){
-		$("#appendhere").append(""+response.data.value+"<br>");
+		$("#appendhere").append(response.data.value+"<br>");
       }, function(error){
 				console.log(error);
 				var appendError = '<span class="white">Error!</span><br>';
@@ -88,9 +86,7 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 	$scope.processInput = function()
 	{
 
-		if($scope.userInput == undefined){
-			//to be handled.
-		}
+
 
 		if($scope.userInput == 'sudo joke'){
 			$scope.busy=1;
@@ -100,8 +96,15 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 		if($scope.userInput!='')
 			$scope.history.push($scope.userInput);
 
+		if($scope.userInput === undefined){
+			$scope.userInput = '';
+
+		}
+		
 		var appendthis = '<span class="console-user">geet</span><span>@</span><span class="red">w4rm4chn13:</span>'+' '+$scope.userInput+'<br>';
 		$("#appendhere").append(appendthis);
+
+
 
 		if($scope.userInput.indexOf("weather")>-1){
 			var cin = ("sudo weather ").length;
