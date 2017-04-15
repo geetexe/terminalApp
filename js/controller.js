@@ -6,12 +6,10 @@ app.directive('myEnter', function () {
                 scope.$apply(function(){
                 	scope.UP = 0;
                 	if(!scope.userInput==''){scope.historyLength++;}
-
                 	if(scope.historyLength)
                 		scope.targetInd = scope.historyLength - 1;
                 	else
                 		scope.targetInd = 0;
-
                     scope.$eval(attrs.myEnter);
                 });
                 event.preventDefault();
@@ -53,15 +51,14 @@ app.directive('myEnter', function () {
     };
 });
 
-
-app.controller("theader", function($scope, $rootScope){
+app.controller("theader", function($scope){
 	$scope.initHead = function(){
 		$(".sidebar").toggleClass("active");
 		$(".anim").toggleClass("click");
 	}
 });
 
-app.factory("jokeApi", function($http){
+app.factory("jokeAPI", function($http){
   var apiurl = "https://api.chucknorris.io/jokes/random";
   return {
     getData: function(){
@@ -77,7 +74,41 @@ app.factory("jokeApi", function($http){
   };
 });
 
-app.controller("terminalController", function($scope,$http, jokeApi, $rootScope){
+app.factory("quoteAPI", function($http){
+  var apiurl = "http://quotes.stormconsultancy.co.uk/random.json";
+  return {
+    getData: function(){
+      $http.get(apiurl)
+      .then(function(response){
+      	console.log(response);
+		$("#appendhere").append(response.data.quote+" <br>-"+response.data.author+"<br>");
+      }, function(error){
+				console.log(error);
+				var appendError = '<span class="white">Error!</span><br>';
+				$("#appendhere").append(appendError);
+			});    
+    }  
+  };
+});
+
+app.factory("weatherAPI", function($http, $rootScope){
+  return {
+    getData: function(){
+      $http.get("http://api.openweathermap.org/data/2.5/weather?q="+$rootScope.city+"&appid=f4ef0931edd7df0498dd3b62d27c0ff6&units=metric")
+      .then(function(response){
+				$rootScope.des = response.data.weather[0].description.toUpperCase();
+				var appendWeather = '<span class="white">'+ "Temperature in "+response.data.name+": " +'</span><br>'+' '+response.data.main.temp+'&deg;C <br>'+$rootScope.des+'<br>';
+				$("#appendhere").append(appendWeather);
+			}, function(error){
+				var err = error.status===-1 ? "CORS issue." : "Error.";
+				var appendWeather = '<span class="white">Error!:</span><br>'+' '+err+'<br>';
+				$("#appendhere").append(appendWeather);
+			});  
+    }  
+  };
+});
+
+app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI, $rootScope, quoteAPI){
 	$scope.UP = 0;
 	$scope.busy = 0;
 	$scope.toggling = 0;
@@ -87,7 +118,11 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 	{
 		if($scope.userInput == 'sudo joke'){
 			$scope.busy=1;
-			jokeApi.getData();
+			jokeAPI.getData();
+		}
+		if($scope.userInput == 'sudo quote'){
+			$scope.busy=1;
+			quoteAPI.getData();
 		}
 		if($scope.userInput!='')
 			$scope.history.push($scope.userInput);
@@ -97,26 +132,10 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 		$("#appendhere").append(appendthis);
 		if($scope.userInput.indexOf("weather")>-1){
 			var cin = ("sudo weather ").length;
-			var city = $scope.userInput.slice(cin,$scope.userInput.length);
+			$rootScope.city = $scope.userInput.slice(cin,$scope.userInput.length);
 			$scope.userInput = '';
 			$scope.busy = 1;
-			$http.get("http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=f4ef0931edd7df0498dd3b62d27c0ff6&units=metric")
-			.then(function(response){
-				$scope.str = response.data.main.temp;
-				$scope.des = response.data.weather[0].description;
-				$scope.s1 = $scope.str;
-				var n = "Temperature in "+response.data.name+": "
-				var appendjoke = '<span class="white">'+n+'</span><br>'+' '+$scope.s1+'&deg;C <br>'+$scope.des+'<br>';
-				$("#appendhere").append(appendjoke);
-			}, function(error){
-				var err = error.status===-1 ? "CORS issue." : "Error.";
-				console.log("response: "+ error)
-				$scope.str = err;
-				$scope.s1 = $scope.str;
-				//console.log($scope.str);
-				var appendWeather = '<span class="white">Error!:</span><br>'+' '+$scope.s1+'<br>';
-				$("#appendhere").append(appendWeather);
-			});
+			weatherAPI.getData();
 		}
 		if($scope.userInput.indexOf("flip")>-1){
 			$scope.busy = 1;
@@ -134,28 +153,23 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 			var appendId = '<span class="white">You\'re '+'Geet.</span><br>';
 			$("#appendhere").append(appendId);
 		}
-		if($scope.userInput == "sudo geet"){
+		var bg = [
+			"http://s1.picswalls.com/wallpapers/2015/09/20/beautiful-hd-wallpaper-2015_111526537_269.jpg",
+			"https://s-media-cache-ak0.pinimg.com/originals/25/b7/f3/25b7f3b7fb56e6d0f457a1f02eb88782.jpg",
+			"https://wallpprs.media/preview/negative-space_wallpprs.com_.jpg",
+			"http://www.hdwallpapers.in/walls/amanda_seyfried_7-wide.jpg",
+			"http://wallpaperclicker.com/storage/wallpaper/Beautiful-American-Hollywood-Actress-Anne-Hathaway-in-Blue-Dress-on-Sofa-HD-Photos-80766344.jpg",
+			"http://wallpapercave.com/wp/AUMdHwh.jpg",
+			"/images/bg.jpg"
+		];
+		if($scope.userInput == "sudo change bg"){
 			$scope.busy = 1;
-            var part1 = "G E e T";                                  
-            var part2 = "G e e T";                                  
-            var part3 = "G e E t";                                  
-            var part4 = "g E E t";                                  
-            var part5 = "g e e t";                                  
-            var part6 = "g E E T";                                  
-            var part7 = "G e e t";                                  
-            var part8 = "g e E T";                                  
-            var part9 = "G E E T";                                  
-			var parts = [part1,part2,part3,part4,part5,part6,part7,part8,part9];
-			var i = 0;
-			var appendId = '<span class="white">Here we go.</span><br><div class="parentanim"><span class="sudoGeet"></span></div>';
+			var rnd = Math.floor((Math.random() * bg.length) + 1);
+			if(rnd == bg.length)
+				rnd = 0;
+			$('.bg').css('background', 'url('+bg[rnd]+')');
+			var appendId = '<span class="white">Background changed.</span><br>';
 			$("#appendhere").append(appendId);
-			$(".parentanim").css("height", "13px").css("overflow", "hidden")
-			setInterval(function(){
-				if(i== parts.length){i=0;}
-				$(".sudoGeet").append(parts[i]+"<br>");
-				setTimeout(function(){ $(".sudoGeet").empty(); }, 300);
-				i++;
-			}, 500);
 		}
 		if($scope.userInput == "sudo blackout"){
 			$scope.toggling++;
@@ -166,24 +180,8 @@ app.controller("terminalController", function($scope,$http, jokeApi, $rootScope)
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
 		}
-		/*if($scope.userInput == "sudo hide menu"){
-			
-			$(".top-header").hide();
-			
-			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">Top header is now hidden.</span><br>';
-				$("#appendhere").append(appendStat);
-			$scope.busy = 1;
-		}
-		if($scope.userInput == "sudo show menu"){
-			
-			$(".top-header").show();
-			
-			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">Top header is now visible.</span><br>';
-				$("#appendhere").append(appendStat);
-			$scope.busy = 1;
-		}*/
 		if($scope.userInput == "help"){
-			var sudohelp = "<span>sudo joke</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo show menu</span><br/><span>sudo hide menu</span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
+			var sudohelp = "<span>sudo joke</span><br/><span>sudo change bg</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
 			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">You can issue the following commands to the terminal:</span><br>'+sudohelp;
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
@@ -239,4 +237,8 @@ app.controller("newController", function($scope){
 		$(".cent").text(w);
 	}
 	
+});
+
+app.controller("myController", function($scope){
+	$scope.name = 'Geet'
 });
