@@ -2,7 +2,6 @@ app.directive('myEnter', function () {
     return function (scope, element, attrs) {
         element.bind("keydown", function (event) {
             if(event.which === 13) {
-            	$(".window").animate({ scrollTop: $("#scr").height() }, 1000);
                 scope.$apply(function(){
                 	scope.UP = 0;
                 	if(!scope.userInput==''){scope.historyLength++;}
@@ -12,6 +11,7 @@ app.directive('myEnter', function () {
                 		scope.targetInd = 0;
                     scope.$eval(attrs.myEnter);
                 });
+            	$(".window").animate({ scrollTop: $("#scr").height() }, 1000);
                 event.preventDefault();
                 event.stopImmediatePropagation();
             }

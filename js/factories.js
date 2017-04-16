@@ -20,7 +20,6 @@ app.factory("quoteAPI", function($http){
     getData: function(){
       $http.get(apiurl)
       .then(function(response){
-      	console.log(response);
 		$("#appendhere").append(response.data.quote+" <br>-"+response.data.author+"<br>");
       }, function(error){
 				console.log(error);
