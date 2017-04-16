@@ -1,56 +1,3 @@
-app.directive('myEnter', function () {
-    return function (scope, element, attrs) {
-        element.bind("keydown", function (event) {
-            if(event.which === 13) {
-            	$(".window").animate({ scrollTop: $("#scr").height() }, 1000);
-                scope.$apply(function(){
-                	scope.UP = 0;
-                	if(!scope.userInput==''){scope.historyLength++;}
-                	if(scope.historyLength)
-                		scope.targetInd = scope.historyLength - 1;
-                	else
-                		scope.targetInd = 0;
-                    scope.$eval(attrs.myEnter);
-                });
-                event.preventDefault();
-                event.stopImmediatePropagation();
-            }
-            if(event.which === 38 || event.which === 40) {
-	            	var ev = event.which===38?'UP':'DOWN';
-	            	console.log("Event: "+ev);
-	            	$(".window").animate({ scrollTop: $("#scr").height() }, 1000);
-	                scope.$apply(function (){
-	                	var arr = [];
-	                	arr = scope.history;
-	                    if(ev=='UP')
-	                    {
-	                    	if(scope.targetInd>-1)
-	                    		scope.userInput = scope.history[scope.targetInd];
-	                    	else
-	                    		scope.userInput = scope.history[0];
-	                    	scope.targetInd -= 1;
-	                    	if(scope.targetInd < 0)
-	                    		scope.targetInd = 0;		                    
-		                    scope.UP = 1;	                    	
-	                    }
-	                    else
-	                    {
-	                    	if(scope.UP)
-	                    	{
-		                    	scope.targetInd  += 1;
-		                    	if(scope.targetInd >= scope.historyLength)
-		                    		scope.targetInd = scope.historyLength-1;
-		                    	scope.userInput = scope.history[scope.targetInd];	                    		
-	                    	}
-	                    }	                    
-	                });
-	                event.preventDefault();
-	                event.stopImmediatePropagation();          		
-            }
-        });
-    };
-});
-
 app.controller("theader", function($scope){
 	$scope.initHead = function(){
 		$(".sidebar").toggleClass("active");
@@ -58,59 +5,10 @@ app.controller("theader", function($scope){
 	}
 });
 
-app.factory("jokeAPI", function($http){
-  var apiurl = "https://api.chucknorris.io/jokes/random";
-  return {
-    getData: function(){
-      $http.get(apiurl)
-      .then(function(response){
-		$("#appendhere").append(response.data.value+"<br>");
-      }, function(error){
-				console.log(error);
-				var appendError = '<span class="white">Error!</span><br>';
-				$("#appendhere").append(appendError);
-			});    
-    }  
-  };
-});
-
-app.factory("quoteAPI", function($http){
-  var apiurl = "http://quotes.stormconsultancy.co.uk/random.json";
-  return {
-    getData: function(){
-      $http.get(apiurl)
-      .then(function(response){
-      	console.log(response);
-		$("#appendhere").append(response.data.quote+" <br>-"+response.data.author+"<br>");
-      }, function(error){
-				console.log(error);
-				var appendError = '<span class="white">Error!</span><br>';
-				$("#appendhere").append(appendError);
-			});    
-    }  
-  };
-});
-
-app.factory("weatherAPI", function($http, $rootScope){
-  return {
-    getData: function(){
-      $http.get("http://api.openweathermap.org/data/2.5/weather?q="+$rootScope.city+"&appid=f4ef0931edd7df0498dd3b62d27c0ff6&units=metric")
-      .then(function(response){
-				$rootScope.des = response.data.weather[0].description.toUpperCase();
-				var appendWeather = '<span class="white">'+ "Temperature in "+response.data.name+": " +'</span><br>'+' '+response.data.main.temp+'&deg;C <br>'+$rootScope.des+'<br>';
-				$("#appendhere").append(appendWeather);
-			}, function(error){
-				var err = error.status===-1 ? "CORS issue." : "Error.";
-				var appendWeather = '<span class="white">Error!:</span><br>'+' '+err+'<br>';
-				$("#appendhere").append(appendWeather);
-			});  
-    }  
-  };
-});
-
 app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI, $rootScope, quoteAPI){
 	$scope.UP = 0;
 	$scope.busy = 0;
+	$scope.menu = 0;
 	$scope.toggling = 0;
 	$scope.history = [];
 	$scope.historyLength = $scope.history.length;
@@ -179,8 +77,20 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
 		}
+		if($scope.userInput == 'sudo toggle menu'){
+			$scope.busy = 1;
+			var toggle = $scope.menu%2;
+			var status = toggle?'shown':'hidden';
+			if(toggle)
+				$(".top-header").show();
+			else
+				$(".top-header").hide();
+			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">Menu is now'+' '+status+'.</span><br>';
+			$("#appendhere").append(appendStat);
+			$scope.menu++;
+		}
 		if($scope.userInput == "help"){
-			var sudohelp = "<span>sudo joke</span><br/><span>sudo change bg</span><br/><span>sudo quote</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
+			var sudohelp = "<span>sudo joke</span><br/><span>sudo change bg</span><br/><span>sudo quote</span><br/><span>sudo toggle menu</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
 			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">You can issue the following commands to the terminal:</span><br>'+sudohelp;
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
