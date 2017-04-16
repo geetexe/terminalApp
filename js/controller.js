@@ -78,6 +78,20 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 			"https://images.unsplash.com/photo-1432866589724-ad10bb528bfa?dpr=1&auto=format&fit=crop&w=1080&h=719&q=80&cs=tinysrgb&crop=&bg=",
 			"https://images.unsplash.com/photo-1484627147104-f5197bcd6651?dpr=1&auto=format&fit=crop&w=1080&h=720&q=80&cs=tinysrgb&crop=&bg="
 		];
+		if($scope.userInput == 'sudo slideshow'){
+			$scope.busy=1;
+			console.log(bg)
+			var rnd1;
+			setInterval(function(){
+				rnd1 = Math.floor((Math.random() * bg.length) + 1);
+				if(rnd1 == bg.length)
+					rnd1 = 0;
+				$('.bg').css('background', 'url('+bg[rnd1]+')');	
+			}, 2000);
+			
+			var appendId = '<span class="white">Slideshow initiated.</span><br>';
+			$("#appendhere").append(appendId);
+		}
 		if($scope.userInput == "sudo change bg"){
 			$scope.busy = 1;
 			var rnd = Math.floor((Math.random() * bg.length) + 1);
