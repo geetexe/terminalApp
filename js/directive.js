@@ -4,14 +4,14 @@ app.directive('myEnter', function () {
             if(event.which === 13) {
                 scope.$apply(function(){
                 	scope.UP = 0;
-                	if(!scope.userInput==''){scope.historyLength++;}
+                	if(!scope.userInput==''){scope.historyLength++;}                	
                 	if(scope.historyLength)
                 		scope.targetInd = scope.historyLength - 1;
                 	else
                 		scope.targetInd = 0;
                     scope.$eval(attrs.myEnter);
                 });
-            	$(".window").animate({ scrollTop: $("#scr").height() }, 1000);
+            	
                 event.preventDefault();
                 event.stopImmediatePropagation();
             }
@@ -31,7 +31,8 @@ app.directive('myEnter', function () {
 	                    	scope.targetInd -= 1;
 	                    	if(scope.targetInd < 0)
 	                    		scope.targetInd = 0;		                    
-		                    scope.UP = 1;	                    	
+		                    scope.UP = 1;	  
+		                    $(".window").animate({ scrollTop: $("#scr").height() }, 10);                  	
 	                    }
 	                    else
 	                    {

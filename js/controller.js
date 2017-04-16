@@ -12,6 +12,11 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 	$scope.toggling = 0;
 	$scope.history = [];
 	$scope.historyLength = $scope.history.length;
+
+	$scope.scdown = function(){
+		$(".window").animate({ scrollTop: $("#appendhere").height() }, 1000);
+	}
+
 	$scope.processInput = function()
 	{
 		if($scope.userInput == 'sudo joke'){
@@ -34,6 +39,15 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 			$scope.userInput = '';
 			$scope.busy = 1;
 			weatherAPI.getData();
+		}
+		if($scope.userInput.indexOf("bg-url")>-1){
+			$scope.busy = 1;
+			var urlLength = ("sudo bg-url ").length;
+			var bg = 'url("'+$scope.userInput.slice(urlLength,$scope.userInput.length)+'")';
+			$(".bg").css("background",bg);
+			$scope.userInput = '';
+			var appendThis = '<span class="white">Custom wallpaper url accepted.</span><br>';
+			$("#appendhere").append(appendThis);
 		}
 		if($scope.userInput.indexOf("flip")>-1){
 			$scope.busy = 1;
@@ -58,7 +72,11 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 			"http://www.hdwallpapers.in/walls/amanda_seyfried_7-wide.jpg",
 			"http://wallpaperclicker.com/storage/wallpaper/Beautiful-American-Hollywood-Actress-Anne-Hathaway-in-Blue-Dress-on-Sofa-HD-Photos-80766344.jpg",
 			"http://wallpapercave.com/wp/AUMdHwh.jpg",
-			"/images/bg.jpg"
+			"/images/bg.jpg",
+			"https://images.unsplash.com/photo-1464983953574-0892a716854b?dpr=1&auto=format&fit=crop&w=1080&h=720&q=80&cs=tinysrgb&crop=&bg=",
+			"https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?dpr=1&auto=format&fit=crop&w=1080&h=720&q=80&cs=tinysrgb&crop=&bg=",
+			"https://images.unsplash.com/photo-1432866589724-ad10bb528bfa?dpr=1&auto=format&fit=crop&w=1080&h=719&q=80&cs=tinysrgb&crop=&bg=",
+			"https://images.unsplash.com/photo-1484627147104-f5197bcd6651?dpr=1&auto=format&fit=crop&w=1080&h=720&q=80&cs=tinysrgb&crop=&bg="
 		];
 		if($scope.userInput == "sudo change bg"){
 			$scope.busy = 1;
@@ -90,7 +108,7 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 			$scope.menu++;
 		}
 		if($scope.userInput == "help"){
-			var sudohelp = "<span>sudo joke</span><br/><span>sudo change bg</span><br/><span>sudo quote</span><br/><span>sudo toggle menu</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
+			var sudohelp = "<span>sudo joke</span><br/><span>sudo bg-url [url]</span><br/><span>sudo change bg</span><br/><span>sudo quote</span><br/><span>sudo toggle menu</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
 			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">You can issue the following commands to the terminal:</span><br>'+sudohelp;
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
@@ -103,6 +121,7 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 					$("#appendhere").append(appenderror);
 			}
 		}
+		$scope.scdown();
 		$scope.busy = 0;
 		$scope.userInput= '';
 	}
