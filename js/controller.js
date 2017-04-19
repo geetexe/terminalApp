@@ -62,7 +62,6 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 		}
 		if($scope.userInput.indexOf("skew")>-1){
 			$scope.busy = 1;
-
 			if($scope.userInput.indexOf("-x")>-1){
 				var startIndex = ("sudo skewx ").length;
 				var endIndex = $scope.userInput.length;
@@ -73,7 +72,6 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 				var appendThis = '<span class="white">Skewed on X by </span><br>'+' '+deg+' degrees.<br>';
 				$("#appendhere").append(appendThis);
 			}
-
 			if($scope.userInput.indexOf("-y")>-1){
 				var startIndex = ("sudo skewx ").length;
 				var endIndex = $scope.userInput.length;
@@ -84,8 +82,6 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 				var appendThis = '<span class="white">Skewed on Y by </span><br>'+' '+deg+' degrees.<br>';
 				$("#appendhere").append(appendThis);
 			}
-
-			
 		}
 		if($scope.userInput == "whoami"){
 			$scope.busy = 1;
