@@ -60,6 +60,33 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 			var appendThis = '<span class="white">Rotated by </span><br>'+' '+deg+'<br>';
 			$("#appendhere").append(appendThis);
 		}
+		if($scope.userInput.indexOf("skew")>-1){
+			$scope.busy = 1;
+
+			if($scope.userInput.indexOf("-x")>-1){
+				var startIndex = ("sudo skewx ").length;
+				var endIndex = $scope.userInput.length;
+				var degrees = $scope.userInput.slice(startIndex,endIndex);
+				var deg = Number(degrees);
+				var c = "skewX(" +deg+ "deg)";
+				$("#scr").css("transform",c);
+				var appendThis = '<span class="white">Skewed on X by </span><br>'+' '+deg+' degrees.<br>';
+				$("#appendhere").append(appendThis);
+			}
+
+			if($scope.userInput.indexOf("-y")>-1){
+				var startIndex = ("sudo skewx ").length;
+				var endIndex = $scope.userInput.length;
+				var degrees = $scope.userInput.slice(startIndex,endIndex);
+				var deg = Number(degrees);
+				var c = "skewY(" +deg+ "deg)";
+				$("#scr").css("transform",c);
+				var appendThis = '<span class="white">Skewed on Y by </span><br>'+' '+deg+' degrees.<br>';
+				$("#appendhere").append(appendThis);
+			}
+
+			
+		}
 		if($scope.userInput == "whoami"){
 			$scope.busy = 1;
 			var appendId = '<span class="white">You\'re '+'Geet.</span><br>';
@@ -122,7 +149,7 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 			$scope.menu++;
 		}
 		if($scope.userInput == "help"){
-			var sudohelp = "<span>sudo joke</span><br/><span>sudo bg-url [url]</span><br/><span>sudo change bg</span><br/><span>sudo quote</span><br/><span>sudo toggle menu</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo flip [degrees (only digits)]</span><br/>";
+			var sudohelp = "<span>sudo joke</span><br/><span>sudo bg-url [url]</span><br/><span>sudo change bg</span><br/><span>sudo quote</span><br/><span>sudo toggle menu</span><br/><span>sudo blackout</span><br/><span>sudo weather [city]</span><span><br/><span>sudo flip [degrees (only digits)]</span><br/><span>sudo skew-x [degrees (only digits)]</span><br/><span>sudo skew-y [degrees (only digits)]</span><br/>";
 			var appendStat = '<span class="red">w4rm4chn13:</span>'+' '+'<span class="white">You can issue the following commands to the terminal:</span><br>'+sudohelp;
 				$("#appendhere").append(appendStat);
 			$scope.busy = 1;
