@@ -21,11 +21,15 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 	{
 		if($scope.userInput == 'sudo joke'){
 			$scope.busy=1;
-			jokeAPI.getData();
+			jokeAPI.getData().then(function(response){
+				$("#appendhere").append(response.data.value+"<br>");
+			});
 		}
 		if($scope.userInput == 'sudo quote'){
 			$scope.busy=1;
-			quoteAPI.getData();
+			quoteAPI.getData().then(function(response){
+				$("#appendhere").append(response.data.quote+" <br>-"+response.data.author+"<br>");
+			});
 		}
 		if($scope.userInput!='')
 			$scope.history.push($scope.userInput);
@@ -38,7 +42,9 @@ app.controller("terminalController", function($scope,$http, jokeAPI, weatherAPI,
 			$rootScope.city = $scope.userInput.slice(cin,$scope.userInput.length);
 			$scope.userInput = '';
 			$scope.busy = 1;
-			weatherAPI.getData();
+			weatherAPI.getData().then(function(response){
+				$("#appendhere").append('<span class="white">'+ "Temperature in "+response.data.name+": " +'</span><br>'+' '+response.data.main.temp+'&deg;C <br>'+response.data.weather[0].description.toUpperCase()+'<br>');
+			});
 		}
 		if($scope.userInput.indexOf("bg-url")>-1){
 			$scope.busy = 1;
